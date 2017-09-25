@@ -54,25 +54,25 @@ var operators = {
   '>': {
     'precedence': 11,
     'func': function func(a, b) {
-      return a > b;
+      return parseFloat(a) > parseFloat(b);
     }
   },
   '<': {
     'precedence': 11,
     'func': function func(a, b) {
-      return a < b;
+      return parseFloat(a) < parseFloat(b);
     }
   },
   '>=': {
     'precedence': 11,
     'func': function func(a, b) {
-      return a >= b;
+      return parseFloat(a) >= parseFloat(b);
     }
   },
   '<=': {
     'precedence': 11,
     'func': function func(a, b) {
-      return a <= b;
+      return parseFloat(a) <= parseFloat(b);
     }
   },
 
@@ -124,11 +124,19 @@ function toBool(a) {
   return a;
 }
 
-// add whitespace to '(', ')', and '!' operators so that
-// "(a + !b)" -> "( a + ! b )"
+// add whitespace to '=', <', '>', '>=',  <=', (', ')', and '!' operators as needed so that
+// "(a + !b)" -> "( a + ! b )" etc...
 function addSpaces(string) {
   var split = string.split('');
   var characters = split.map(function (character, i) {
+    if (character == '=') {
+      if (split[i - 1] != ' ' && split[i - 1] != '<' && split[i - 1] != '>') character = ' ' + character;
+      if (split[i + 1] != ' ') character = character + ' ';
+    }
+    if (character == '>' || character == '<') {
+      if (split[i - 1] != ' ') character = ' ' + character;
+      if (split[i + 1] != ' ' && split[i + 1] != '=') character = character + ' ';
+    }
     if (character == '(' || character == ')') {
       if (split[i - 1] != ' ') character = ' ' + character;
       if (split[i + 1] != ' ') character = character + ' ';
